@@ -214,9 +214,19 @@ class Boy:
         self.state_machine.update()
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
 
-        self.x += math.cos(self.dir) * self.speed * game_framework.frame_time
-        self.y += math.sin(self.dir) * self.speed * game_framework.frame_time
+        if math.cos(self.dir)<0:
+            if self.x>0:
+                self.x += math.cos(self.dir) * self.speed * game_framework.frame_time
+        else:
+            if self.x<1830:
+                self.x += math.cos(self.dir) * self.speed * game_framework.frame_time
 
+        if math.sin(self.dir) < 0:
+            if self.y > 0:
+                self.y += math.sin(self.dir) * self.speed * game_framework.frame_time
+        else:
+            if self.y < 1100:
+                self.y += math.sin(self.dir) * self.speed * game_framework.frame_time
         # self.x = clamp(25.0, self.x, get_canvas_width()-25.0)
         # self.y = clamp(25.0, self.y, get_canvas_height()-25.0)
 
@@ -227,14 +237,15 @@ class Boy:
         self.state_machine.handle_event(('INPUT', event))
 
     def draw(self):
-        sx,sy= get_canvas_width() //2 ,get_canvas_height() //2
-        #sx,sy =self.x - server.background.window_left, self.y - server.background.window_bottom
+        #sx,sy= get_canvas_width() //2 ,get_canvas_height() //2
+        sx,sy =self.x - server.background.window_left, self.y - server.background.window_bottom
         self.image.clip_draw(int(self.frame) * 100, self.action * 100, 100, 100, sx, sy)
         self.font.draw(int(sx - 100), int(sy + 60), f'({self.x:5.5}, {self.y:5.5})', (255, 255, 0))
 
 
     def get_bb(self):
-        return self.x - 20, self.y - 50, self.x + 20, self.y + 50
+        sx, sy = self.x - server.background.window_left, self.y - server.background.window_bottom
+        return sx - 20, sy - 50, sx + 20, sy + 50
 
     def handle_collision(self, group, other):
 

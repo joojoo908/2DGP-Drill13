@@ -11,12 +11,12 @@ class Ball:
     def __init__(self, x=None, y=None):
         if Ball.image == None:
             Ball.image = load_image('ball21x21.png')
-        self.x = x if x else random.randint(100, 1180)
-        self.y = y if y else random.randint(100, 924)
+        self.x = x if x else random.randint(100, 1800-100)
+        self.y = y if y else random.randint(100, 1100-100)
 
     def draw(self):
-        sx =self.x - server.boy.x+get_canvas_width() //2
-        sy =self.y - server.boy.y+get_canvas_height() //2
+        sx = self.x - server.background.window_left
+        sy = self.y - server.background.window_bottom
         self.image.draw(sx,sy)
         draw_rectangle(*self.get_bb())
 
@@ -24,9 +24,12 @@ class Ball:
         pass
 
     def get_bb(self):
-        sx = self.x - server.boy.x +get_canvas_width() //2
-        sy = self.y - server.boy.y +get_canvas_height() //2
+        sx = self.x - server.background.window_left
+        sy = self.y - server.background.window_bottom
         return sx - 10, sy - 10, sx + 10, sy + 10
 
     def handle_collision(self, group, other):
+        match group:
+            case 'boy:ball':
+                game_world.remove_object(self)
         pass
